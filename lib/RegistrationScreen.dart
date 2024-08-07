@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:Face_Recognition/HomeScreen.dart';
 import 'package:Face_Recognition/ML/Recognition.dart';
@@ -26,7 +27,7 @@ class _HomePageState extends State<RegistrationScreen> {
   dynamic faceDetector;
 
   //TODO declare face recognizer
-  late Recognizer _recognizer;
+  final Recognizer _recognizer = Recognizer();
 
   @override
   void initState() {
@@ -44,7 +45,7 @@ class _HomePageState extends State<RegistrationScreen> {
     faceDetector = FaceDetector(options: options);
 
     //TODO initialize face recognizer
-    _recognizer = Recognizer();
+    // _recognizer = ;
   }
 
   //TODO capture image using camera
@@ -78,9 +79,14 @@ class _HomePageState extends State<RegistrationScreen> {
     //TODO passing input to face detector and getting detected faces
     final inputImage = InputImage.fromFile(_image!);
     faces = await faceDetector.processImage(inputImage);
+    faces.forEach((e)=>print("face;-data " +e.boundingBox.bottom.toString()));
 
     //TODO call the method to perform face recognition on detected faces
-    performFaceRecognition();
+    try {
+      performFaceRecognition();
+    }catch(e,st){
+      log("performFaceRecognition",stackTrace: st,error: e,name: "performFaceRecognition");
+    }
   }
 
   //TODO remove rotation of camera images
@@ -92,8 +98,9 @@ class _HomePageState extends State<RegistrationScreen> {
 
   //TODO perform Face Recognition
   performFaceRecognition() async {
-    image = await _image?.readAsBytes();
-    image = await decodeImageFromList(image);
+   var dataimage = await _image?.readAsBytes();
+    image = await decodeImageFromList(dataimage!);
+
     print("${image.width}   ${image.height}");
 
     for (Face face in faces) {
@@ -111,10 +118,16 @@ class _HomePageState extends State<RegistrationScreen> {
           left.toInt(),top.toInt(),width.toInt(),height.toInt());
       final bytes = await File(cropedFace!.path).readAsBytes();
       final img.Image? faceImg = img.decodeImage(bytes);
+      setState(() {
+      print("Face Image ${faceImg.runtimeType}");
+      });
+      if(face.boundingBox.width>0){
       Recognition recognition = _recognizer.recognize(faceImg!, face.boundingBox);
 
       //TODO show face registration dialogue
+      print("Show Dialog");
       showFaceRegistrationDialogue(cropedFace, recognition);
+      }
     }
     drawRectangleAroundFaces();
   }
@@ -153,7 +166,7 @@ class _HomePageState extends State<RegistrationScreen> {
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                       content: Text("Face Registered"),
                     ));
-                  },style: ElevatedButton.styleFrom(primary:Colors.blue,minimumSize: const Size(200,40)),
+                  },style: ElevatedButton.styleFrom(backgroundColor:Colors.blue,minimumSize: const Size(200,40)),
                   child: const Text("Register"))
             ],
              
@@ -177,6 +190,8 @@ class _HomePageState extends State<RegistrationScreen> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
+
+    print("Type of image = ${image.runtimeType}");
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Column(

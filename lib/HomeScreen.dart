@@ -22,6 +22,10 @@ class _HomePageState extends State<HomeScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Container(margin: const EdgeInsets.only(top: 100),child: Image.asset("images/logo.png",width: screenWidth-40,height: screenWidth-40,)),
+         Column(children: [
+           Text("Welcome To" , style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),
+           Text("The Last Three" , style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+         ],),
           Container(
             margin: const EdgeInsets.only(bottom: 50),
             child: Column(
