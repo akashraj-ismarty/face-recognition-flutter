@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:Face_Recognition/HomeScreen.dart';
 import 'package:image/image.dart' as img;
 import 'package:tflite_flutter/tflite_flutter.dart';
+import '../register_face/faces_data_model.dart';
 import 'Recognition.dart';
 import '../main.dart';
 
@@ -121,12 +122,12 @@ class Recognizer {
   Pair findNearest(List<List<double>> data) {
     List<double> emb = data[0];
     Pair pair = Pair("Unknown", -5);
-    for (var item in HomeScreen.registered.entries) {
+    for (var item in DataModel.registered.entries) {
       final String name = item.key;
       // item.value.embeddings.forEach((e)=>print("Nearest ${e.runtimeType}"));
 
       List<List<double>> knownEmbs =[];
-      for (var knownEmb in item.value.embeddings) {
+      for (var knownEmb in item.value[0].embeddings) {
         knownEmbs.add(knownEmb);
         double distance = 0;
         for (int i = 0; i < emb.length; i++) {

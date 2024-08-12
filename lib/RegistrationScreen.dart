@@ -184,15 +184,13 @@ class _HomePageState extends State<RegistrationScreen> {
       recognizedFaces.add(recognition);
 
       //TODO show face registration dialogue
-      print("Show Dialog");
-      showFaceRegistrationDialogue(cropedFace, recognition, averageEmbeddings);
-      }
+      showFaceRegistrationDialogue(cropedFace, recognition);
     }
     drawRectangleAroundFaces();
   }
-
+}
   //TODO Face Registration Dialogue
-  showFaceRegistrationDialogue(File cropedFace, Recognition recognition, List<double> averageEmbeddings){
+  showFaceRegistrationDialogue(File cropedFace, Recognition recognition){
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -218,8 +216,8 @@ class _HomePageState extends State<RegistrationScreen> {
               const SizedBox(height: 10,),
               ElevatedButton(
                   onPressed: () {
-                    HomeScreen.registered[textEditingController.text] = [Recognition(textEditingController.text, Rect.zero, [averageEmbeddings], 0.0)];
-                    // HomeScreen.registered[ textEditingController.text] = [...(HomeScreen.registered[ textEditingController.text]??[]),recognition];
+                    // HomeScreen.registered[textEditingController.text] = [Recognition(textEditingController.text, Rect.zero, [averageEmbeddings], 0.0)];
+                    HomeScreen.registered[ textEditingController.text] = [...(HomeScreen.registered[ textEditingController.text]??[]),recognition];
                     // HomeScreen.registered.putIfAbsent(
                     //     textEditingController.text, () => recognition);
                     textEditingController.text = "";
