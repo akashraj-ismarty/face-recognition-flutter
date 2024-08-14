@@ -56,6 +56,7 @@ class _RegisteredImagesState extends State<RegisteredImages> {
     if (await directory.exists()) {
       var files = directory.listSync();
       print('files detected ${files.length}');
+      Platform.isIOS? print('iOS files  ${path}'):print('android files  ${path}');
 
       if (image) {
         List<FileSystemEntity> imageList =
@@ -168,10 +169,33 @@ class _RegisteredImagesState extends State<RegisteredImages> {
                         SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 4),
                         itemBuilder: (context, index) =>
-                            Image.file(
-                              File(items[index].path),
-                              height: 80,
-                              width: 80,
+                            GestureDetector(
+                              onTap: (){
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return Dialog(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10.0),
+                                      ),
+                                      child: Container(
+                                        padding: EdgeInsets.all(20.0),
+                                        child: Image.file(
+                                          File(items[index].path),
+                                          height: 80,
+                                          width: 80,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+
+                              },
+                              child: Image.file(
+                                File(items[index].path),
+                                height: 80,
+                                width: 80,
+                              ),
                             )),
                   ),
                   Text("Un Filtered"),
@@ -184,10 +208,33 @@ class _RegisteredImagesState extends State<RegisteredImages> {
                         SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 4),
                         itemBuilder: (context, index) =>
-                            Image.file(
-                              File(second[index].path),
-                              height: 80,
-                              width: 80,
+                            GestureDetector(
+                              onTap: (){
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return Dialog(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10.0),
+                                      ),
+                                      child: Container(
+                                          padding: EdgeInsets.all(20.0),
+                                          child: Image.file(
+                                            File(second[index].path),
+                                            height: 80,
+                                            width: 80,
+                                          ),
+                                      ),
+                                    );
+                                  },
+                                );
+
+                              },
+                              child: Image.file(
+                                File(second[index].path),
+                                height: 80,
+                                width: 80,
+                              ),
                             )),
                   ),
                 ],

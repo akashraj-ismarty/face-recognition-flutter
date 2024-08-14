@@ -77,14 +77,43 @@ mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
                 ),
-                itemBuilder: (context, index) => FittedBox(
-                  child: SizedBox(
-                    height: faceImages[index].image.height.toDouble(),
-                    width: faceImages[index].image.width.toDouble(),
-                    child: CustomPaint(
-                      painter: FacePainter(
-                          facesList: faceImages[index].faces,
-                          imageFile: faceImages[index].image),
+                itemBuilder: (context, index) => GestureDetector(
+                 onTap: (){
+                   showDialog(
+                     context: context,
+                     builder: (BuildContext context) {
+                       return Dialog(
+                         shape: RoundedRectangleBorder(
+                           borderRadius: BorderRadius.circular(10.0),
+                         ),
+                         child: Container(
+                           padding: EdgeInsets.all(20.0),
+                           child:  FittedBox(
+                             child: SizedBox(
+                               height: faceImages[index].image.height.toDouble(),
+                               width: faceImages[index].image.width.toDouble(),
+                               child: CustomPaint(
+                                 painter: FacePainter(
+                                     facesList: faceImages[index].faces,
+                                     imageFile: faceImages[index].image),
+                               ),
+                             ),
+                           ),
+                         ),
+                       );
+                     },
+                   );
+
+                 },
+                  child: FittedBox(
+                    child: SizedBox(
+                      height: faceImages[index].image.height.toDouble(),
+                      width: faceImages[index].image.width.toDouble(),
+                      child: CustomPaint(
+                        painter: FacePainter(
+                            facesList: faceImages[index].faces,
+                            imageFile: faceImages[index].image),
+                      ),
                     ),
                   ),
                 ),
