@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:Face_Recognition/RegistrationScreen.dart';
+import 'package:Face_Recognition/loader_ck.dart';
 import 'package:Face_Recognition/register_face/faces_data_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
@@ -46,11 +47,21 @@ class _RegisterFaceViewState extends State<RegisterFaceView> {
     return SafeArea(
       child: Scaffold(
         body: Column(
+mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            TextFormField(
-              controller: controller,
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: TextFormField(
+                controller: controller,
+                 decoration: InputDecoration(
+                   label: Text("Enter User Name"),
+                   hintText: "Enter User Name",
+                   border: OutlineInputBorder(),
+                   focusedBorder: OutlineInputBorder(),
+                 ),
+              ),
             ),
-            Flexible(
+           if(faceImages.isEmpty) Flexible(
               child: GridView.builder(
                 physics: NeverScrollableScrollPhysics(),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -60,7 +71,7 @@ class _RegisterFaceViewState extends State<RegisterFaceView> {
                 itemCount: _images.length,
               ),
             ),
-            Flexible(
+           if(faceImages.isNotEmpty) Flexible(
               child: GridView.builder(
                 physics: NeverScrollableScrollPhysics(),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -80,21 +91,49 @@ class _RegisterFaceViewState extends State<RegisterFaceView> {
                 itemCount: faceImages.length,
               ),
             ),
-            GestureDetector(
-                onTap: () {
-                  _imgFromGallery();
-                },
-                child: Container(
-                  color: Colors.lightBlueAccent,
-                  child: Padding(
-                      padding: EdgeInsets.all(40),
-                      child: Text("Pick 3 Images")),
-                )),
-            ElevatedButton(
-                onPressed: () {
-                  continueSaving();
-                },
-                child: Text("Continue"))
+
+          if( _images.isEmpty)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 250.0 , left: 40 , right: 40),
+              child: GestureDetector(onTap: (){_imgFromGallery();},child:  Image.asset("images/upload.png" , fit: BoxFit.fitWidth,)),
+            ),
+
+         Padding(
+           padding: const EdgeInsets.all(20.0),
+           child: Column(children: [
+             if(_images.isNotEmpty) Row(
+               mainAxisAlignment: MainAxisAlignment.spaceAround,
+               children: [
+                 SizedBox(
+                   width: 150,
+                   child: ElevatedButton(onPressed: (){
+                     _images.clear();
+                     faceImages.clear();
+                     setState(() {
+                       _imgFromGallery();
+                     });
+
+                   }, child:  Text("Pick Again")),
+                 ),
+                 SizedBox(
+                   width: 150,
+                   child: ElevatedButton(onPressed: (){
+                     faceImages.clear();
+                     continueSaving();
+                   }, child:  Text("Register User")),
+                 ),
+               ],
+             ),
+             SizedBox(
+               width: MediaQuery.of(context).size.width,
+               child: ElevatedButton(onPressed: (){
+                 Navigator.of(context)
+                     .push(MaterialPageRoute(builder: (_) => RegisteredImages()));
+               }, child:  Text("Recognize")),
+             ),
+
+           ],),
+         )
           ],
         ),
       ),
@@ -112,6 +151,7 @@ class _RegisterFaceViewState extends State<RegisterFaceView> {
   }
 
   continueSaving() async {
+    LoadingDialog.show(context);
     List<Recognition> data;
     data =
         await Future.wait<Recognition>(_images.map((e) => doFaceDetection(e)));
@@ -189,21 +229,21 @@ class _RegisterFaceViewState extends State<RegisterFaceView> {
   //   });
   // }
   averageEmbedding(List<Recognition> data) {
-    // List<double> average =
-    //     List.generate(data[0].embeddings[0].length, (e) => 0);
-    //
-    // data.forEach((e) {
-    //   for (int i = 0; i < e.embeddings[0].length; i++) {
-    //     average[i] = average[i] + e.embeddings[0][i];
-    //   }
-    // });
-    // average = average.map((e) => e / 3).toList();
-    //
-    // Recognition averageReco = data[0];
-    // averageReco.embeddings = [average];
-    DataModel.registered['${controller.text}'] = [data[0]];
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (_) => RegisteredImages()));
+    List<double> average =
+        List.generate(data[0].embeddings[0].length, (e) => 0);
+
+    data.forEach((e) {
+      for (int i = 0; i < e.embeddings[0].length; i++) {
+        average[i] = average[i] + e.embeddings[0][i];
+      }
+    });
+    average = average.map((e) => e / 3).toList();
+
+    Recognition averageReco = data[0];
+    averageReco.embeddings = [average];
+    LoadingDialog.hide(context);
+    DataModel.registered['${controller.text}'] = [averageReco];
+
   }
 }
 

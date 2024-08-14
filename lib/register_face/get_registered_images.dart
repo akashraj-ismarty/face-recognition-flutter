@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:Face_Recognition/loader_ck.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:image/image.dart' as img;
 import 'package:flutter/material.dart';
@@ -31,7 +32,11 @@ class _RegisteredImagesState extends State<RegisteredImages> {
 
     //TODO initalize face detector
     faceDetector = FaceDetector(options: options);
-    _imgFromCamera();
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      _imgFromCamera();
+      print('Code inside init');
+
+    });
     super.initState();
   }
 
@@ -46,6 +51,7 @@ class _RegisteredImagesState extends State<RegisteredImages> {
   }
 
   Future<void> _listFiles({required String path, bool image = false}) async {
+    LoadingDialog.show(context);
     final directory = Directory(path);
     if (await directory.exists()) {
       var files = directory.listSync();
@@ -69,6 +75,7 @@ class _RegisteredImagesState extends State<RegisteredImages> {
         items = files; second =  [] ;  isImage = image;
 
       }
+      LoadingDialog.hide(context);
       setState(() {
 
       });
@@ -130,7 +137,9 @@ class _RegisteredImagesState extends State<RegisteredImages> {
   }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Container(
+    return Scaffold(
+      appBar: AppBar(),
+      body: Container(
 
       child: Column(
         children: [
@@ -142,7 +151,7 @@ class _RegisteredImagesState extends State<RegisteredImages> {
             ),
           ),
           items.isEmpty
-              ? Text("No Item")
+              ? Text("No Item One")
               : Expanded(
             child: isImage
                 ? SizedBox(
@@ -151,7 +160,7 @@ class _RegisteredImagesState extends State<RegisteredImages> {
                 children: [
                   Text("Filtered"),
                   items.isEmpty
-                      ? Text("No Item")
+                      ? Text("No Item Two ")
                       : Expanded(
                     child: GridView.builder(
                         itemCount: items.length,
@@ -167,7 +176,7 @@ class _RegisteredImagesState extends State<RegisteredImages> {
                   ),
                   Text("Un Filtered"),
                   second.isEmpty
-                      ? Text("No Item")
+                      ? Text("No Item Three")
                       : Expanded(
                     child: GridView.builder(
                         itemCount: second.length,
@@ -188,17 +197,14 @@ class _RegisteredImagesState extends State<RegisteredImages> {
               itemCount: items.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  leading: GestureDetector(
-                      onTap: () {
-                        _listFiles(
-                            path: items[index].path + "/",
-                            image: true);
-                      },
-                      child: Icon(Icons.file_copy)),
+                  leading: ElevatedButton(onPressed: (){
+                    _listFiles(
+                        path: items[index].path + "/",
+                        image: true);
+                  }, child: Text("Select")),
                   title: Text(items[index].path),
                   onTap: () {
                     // Handle the item tap if necessary
-
                     _listFiles(
                         path: items[index].path + "/",
                         image: false);
