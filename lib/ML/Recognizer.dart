@@ -80,7 +80,7 @@ class Recognizer {
     final input = [imageMatrix];
     // Set tensor output [1, 1001]
     final output = List.filled(_outputShape.reduce((a, b) => a * b), 0.0).reshape(_outputShape);
-    print("Inputs: $input");
+    print("Inputs: runtype${input.runtimeType} $input");
     print("Outputs: $output");
     interpreter.run(input, output);
     final run = DateTime.now().millisecondsSinceEpoch - runs;
