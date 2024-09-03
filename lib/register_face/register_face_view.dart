@@ -14,7 +14,6 @@ import '../ML/Recognizer.dart';
 import 'get_registered_images.dart';
 
 String userName = '';
-TextEditingController controller = TextEditingController();
 
 class RegisterFaceView extends StatefulWidget {
   const RegisterFaceView({super.key});
@@ -28,8 +27,9 @@ class _RegisterFaceViewState extends State<RegisterFaceView> {
   List<FaceImages> faceImages = [];
   dynamic faceDetector;
 
-  //TODO declare face recognizer
 
+  //TODO declare face recognizer
+  TextEditingController controller = TextEditingController();
   final Recognizer _recognizer = Recognizer();
 
   @override
@@ -56,7 +56,7 @@ class _RegisterFaceViewState extends State<RegisterFaceView> {
               padding: const EdgeInsets.all(20.0),
               child: TextFormField(
                 controller: controller,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   label: Text("Enter User Name"),
                   hintText: "Enter User Name",
                   border: OutlineInputBorder(),
@@ -67,125 +67,107 @@ class _RegisterFaceViewState extends State<RegisterFaceView> {
                 },
               ),
             ),
-            if (faceImages.isEmpty)
-              Flexible(
-                child: GridView.builder(
-                  physics: NeverScrollableScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                  ),
-                  itemBuilder: (context, index) => Image.file(_images[index]),
-                  itemCount: _images.length,
+            if(faceImages.isEmpty) Flexible(
+              child: GridView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
                 ),
+                itemBuilder: (context, index) => Image.file(_images[index]),
+                itemCount: _images.length,
               ),
-            if (faceImages.isNotEmpty)
-              Flexible(
-                child: GridView.builder(
-                  physics: NeverScrollableScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                  ),
-                  itemBuilder: (context, index) => GestureDetector(
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return Dialog(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            child: Container(
-                              padding: EdgeInsets.all(20.0),
-                              child: FittedBox(
-                                child: SizedBox(
-                                  height:
-                                      faceImages[index].image.height.toDouble(),
-                                  width:
-                                      faceImages[index].image.width.toDouble(),
-                                  child: CustomPaint(
-                                    painter: FacePainter(
-                                        facesList: faceImages[index].faces,
-                                        imageFile: faceImages[index].image),
-                                  ),
+            ),
+            if(faceImages.isNotEmpty) Flexible(
+              child: GridView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                ),
+                itemBuilder: (context, index) => GestureDetector(
+                  onTap: (){
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Dialog(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: Container(
+                            padding: EdgeInsets.all(20.0),
+                            child:  FittedBox(
+                              child: SizedBox(
+                                height: faceImages[index].image.height.toDouble(),
+                                width: faceImages[index].image.width.toDouble(),
+                                child: CustomPaint(
+                                  painter: FacePainter(
+                                      facesList: faceImages[index].faces,
+                                      imageFile: faceImages[index].image),
                                 ),
                               ),
                             ),
-                          );
-                        },
-                      );
-                    },
-                    child: FittedBox(
-                      child: SizedBox(
-                        height: faceImages[index].image.height.toDouble(),
-                        width: faceImages[index].image.width.toDouble(),
-                        child: CustomPaint(
-                          painter: FacePainter(
-                              facesList: faceImages[index].faces,
-                              imageFile: faceImages[index].image),
-                        ),
+                          ),
+                        );
+                      },
+                    );
+
+                  },
+                  child: FittedBox(
+                    child: SizedBox(
+                      height: faceImages[index].image.height.toDouble(),
+                      width: faceImages[index].image.width.toDouble(),
+                      child: CustomPaint(
+                        painter: FacePainter(
+                            facesList: faceImages[index].faces,
+                            imageFile: faceImages[index].image),
                       ),
                     ),
                   ),
-                  itemCount: faceImages.length,
                 ),
+                itemCount: faceImages.length,
               ),
-            // Image.file(File(
-            //     "/var/mobile/Containers/Data/Application/FDDADF50-91BD-4EAE-89E1-EE5FFAAE2B92/Library/Caches/photo_gallery/91D12171-DEE2-41A2-925D-41F8B2809C46__L0__001.jpeg")),
-            if (_images.isEmpty)
+            ),
+
+            if( _images.isEmpty)
               Padding(
-                padding:
-                    const EdgeInsets.only(bottom: 250.0, left: 40, right: 40),
-                child: GestureDetector(
-                    onTap: () {
-                      _imgFromGallery();
-                    },
-                    child: Image.asset(
-                      "images/upload.png",
-                      fit: BoxFit.fitWidth,
-                    )),
+                padding: const EdgeInsets.only(bottom: 250.0 , left: 40 , right: 40),
+                child: GestureDetector(onTap: (){_imgFromGallery();},child:  Image.asset("images/upload.png" , fit: BoxFit.fitWidth,)),
               ),
+
             Padding(
               padding: const EdgeInsets.all(20.0),
-              child: Column(
-                children: [
-                  if (_images.isNotEmpty)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        SizedBox(
-                          width: 150,
-                          child: ElevatedButton(
-                              onPressed: () {
-                                _images.clear();
-                                faceImages.clear();
-                                setState(() {
-                                  _imgFromGallery();
-                                });
-                              },
-                              child: Text("Pick Again")),
-                        ),
-                        SizedBox(
-                          width: 150,
-                          child: ElevatedButton(
-                              onPressed: () {
-                                faceImages.clear();
-                                continueSaving();
-                              },
-                              child: Text("Register User")),
-                        ),
-                      ],
+              child: Column(children: [
+                if(_images.isNotEmpty) Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    SizedBox(
+                      width: 150,
+                      child: ElevatedButton(onPressed: (){
+                        _images.clear();
+                        faceImages.clear();
+                        setState(() {
+                          _imgFromGallery();
+                        });
+
+                      }, child:  Text("Pick Again")),
                     ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (_) => RegisteredImages()));
-                        },
-                        child: Text("Recognize")),
-                  ),
-                ],
-              ),
+                    SizedBox(
+                      width: 150,
+                      child: ElevatedButton(onPressed: (){
+                        faceImages.clear();
+                        continueSaving();
+                      }, child:  Text("Register User")),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: ElevatedButton(onPressed: (){
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (_) => RegisteredImages()));
+                  }, child:  Text("Recognize")),
+                ),
+
+              ],),
             )
           ],
         ),
@@ -207,9 +189,10 @@ class _RegisterFaceViewState extends State<RegisterFaceView> {
     LoadingDialog.show(context);
     List<Recognition> data;
     data =
-        await Future.wait<Recognition>(_images.map((e) => doFaceDetection(e)));
+    await Future.wait<Recognition>(_images.map((e) => doFaceDetection(e)));
 
     averageEmbedding(data);
+
   }
 
   Future<Recognition> doFaceDetection(File file) async {
@@ -224,7 +207,7 @@ class _RegisterFaceViewState extends State<RegisterFaceView> {
 
   removeRotation(File inputImage) async {
     final img.Image? capturedImage =
-        img.decodeImage(await File(inputImage!.path).readAsBytes());
+    img.decodeImage(await File(inputImage!.path).readAsBytes());
     final img.Image orientedImage = img.bakeOrientation(capturedImage!);
     return await File(inputImage.path)
         .writeAsBytes(img.encodeJpg(orientedImage));
@@ -242,9 +225,9 @@ class _RegisterFaceViewState extends State<RegisterFaceView> {
       num left = faceRect.left < 0 ? 0 : faceRect.left;
       num top = faceRect.top < 0 ? 0 : faceRect.top;
       num right =
-          faceRect.right > image.width ? image.width - 1 : faceRect.right;
+      faceRect.right > image.width ? image.width - 1 : faceRect.right;
       num bottom =
-          faceRect.bottom > image.height ? image.height - 1 : faceRect.bottom;
+      faceRect.bottom > image.height ? image.height - 1 : faceRect.bottom;
       num width = right - left;
       num height = bottom - top;
 
@@ -258,7 +241,7 @@ class _RegisterFaceViewState extends State<RegisterFaceView> {
       });
       if (face.boundingBox.width > 0) {
         Recognition recognition =
-            _recognizer.recognize(faceImg!, face.boundingBox);
+        _recognizer.recognize(faceImg!, face.boundingBox);
         faceImages.add(FaceImages(image, faces));
         return recognition;
         // recognizedFaces.add(recognition);
@@ -282,7 +265,7 @@ class _RegisterFaceViewState extends State<RegisterFaceView> {
   // }
   averageEmbedding(List<Recognition> data) {
     List<double> average =
-        List.generate(data[0].embeddings[0].length, (e) => 0);
+    List.generate(data[0].embeddings[0].length, (e) => 0);
 
     data.forEach((e) {
       for (int i = 0; i < e.embeddings[0].length; i++) {
@@ -295,6 +278,7 @@ class _RegisterFaceViewState extends State<RegisterFaceView> {
     averageReco.embeddings = [average];
     LoadingDialog.hide(context);
     DataModel.registered['${controller.text}'] = [averageReco];
+
   }
 }
 
@@ -304,3 +288,5 @@ class FaceImages {
 
   FaceImages(this.image, this.faces);
 }
+
+
