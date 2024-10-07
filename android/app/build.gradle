@@ -62,7 +62,7 @@ android {
 
     signingConfigs {
         release {
-            storeFile file("/Users/kanakalaakash/Documents/keystores/flutter-lastthree-key.jks")
+            storeFile file("C:\\Users\\Akash\\StudioProjects\\face-recognition-flutter\\android\\app\\flutter-lastthree-key.jks")
             //Replace with your keystore file
             storePassword "thelastthree"
             keyAlias "the-last-three-alias"

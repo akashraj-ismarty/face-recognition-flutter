@@ -79,6 +79,7 @@ class _RegisteredImagesState extends State<RegisteredImages> with WidgetsBinding
       await _listFilesForIOS();
     } else if (Platform.isAndroid){
       _listFiles(path: '/storage/emulated/0/', image: false);
+      print('_listFiles call 1, imgFromCamera working here!! ');
     }
   }
 
@@ -376,6 +377,7 @@ class _RegisteredImagesState extends State<RegisteredImages> with WidgetsBinding
                             path: items[index].path + "/",
                             image: true,
                           );
+                          print('_listFiles call 2 working here!! ');
                         } else if (Platform.isIOS) {
                           await _listFilesForIOS();
                         }
@@ -389,6 +391,7 @@ class _RegisteredImagesState extends State<RegisteredImages> with WidgetsBinding
                           path: items[index].path + "/",
                           image: false,
                         );
+                        print('_listFiles call 3 working here!! ');
                       } else if (Platform.isIOS) {
                         await _listFilesForIOS();
                       }
