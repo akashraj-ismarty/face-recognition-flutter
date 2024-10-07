@@ -30,7 +30,7 @@ dependencies:
   flutter:
     sdk: flutter
   photo_gallery:
-  permission_handler:
+  permission_handler: ^11.3.1
 
 
   # The following adds the Cupertino Icons font to your application.
