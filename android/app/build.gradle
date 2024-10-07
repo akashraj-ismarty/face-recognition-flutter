@@ -60,16 +60,26 @@ android {
         versionName flutterVersionName
     }
 
-    buildTypes {
+    signingConfigs {
 //        release {
-//            // TODO: Add your own signing config for the release build.
-//            // Signing with the debug keys for now, so `flutter run --release` works.
-//            signingConfig signingConfigs.debug
+//            storeFile file("C:\\Users\\Akash\\StudioProjects\\face-recognition-flutter\\android\\app\\flutter-lastthree-key.jks")
+//            //Replace with your keystore file
+//            storePassword "thelastthree"
+//            keyAlias "the-last-three-alias"
+//            keyPassword "thelastthree"
 //        }
+//
+//        buildTypes {
+//            release {
+//                // TODO: Add your own signing config for the release build.
+//                // Signing with the debug keys for now, so `flutter run --release` works.
+//                signingConfig signingConfigs.release
+//            }
+//        }
+
     }
 
-}
-
-flutter {
-    source '../..'
+    flutter {
+        source '../..'
+    }
 }

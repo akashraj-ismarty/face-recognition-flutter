@@ -8,6 +8,7 @@ import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image/image.dart' as img;
+import 'package:permission_handler/permission_handler.dart';
 
 import '../ML/Recognition.dart';
 import '../ML/Recognizer.dart';
@@ -39,9 +40,32 @@ class _RegisterFaceViewState extends State<RegisterFaceView> {
 
     //TODO initialize face detector
     faceDetector = FaceDetector(options: options);
+    requestManageStoragePermission();
+    requestStoragePermission();
     super.initState();
   }
 
+
+  static Future<bool> requestStoragePermission() async {
+    if (await Permission.storage.isGranted) {
+      // If the permission is already granted
+      return true;
+    } else {
+      // Request storage permissions
+      PermissionStatus status = await Permission.storage.request();
+      return status == PermissionStatus.granted;
+    }
+  }
+
+  // For Android 11+ where MANAGE_EXTERNAL_STORAGE is required
+  static Future<bool> requestManageStoragePermission() async {
+    if (await Permission.manageExternalStorage.isGranted) {
+      return true;
+    } else {
+      PermissionStatus status = await Permission.manageExternalStorage.request();
+      return status == PermissionStatus.granted;
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
