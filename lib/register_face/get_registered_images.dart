@@ -120,15 +120,13 @@ class _RegisteredImagesState extends State<RegisteredImages> with WidgetsBinding
 
           for (var medium in batch) {
             File? file = await medium.getFile();
-            if (file != null) {
-              File downscaledFile = await downscaleImage(file);
-              if (await doFaceDetectionFilter(downscaledFile.path)) {
-                data.add(downscaledFile);
-              } else {
-                dataNot.add(downscaledFile);
-              }
+            File downscaledFile = await downscaleImage(file);
+            if (await doFaceDetectionFilter(downscaledFile.path)) {
+              data.add(downscaledFile);
+            } else {
+              dataNot.add(downscaledFile);
             }
-          }
+                    }
           setState(() {
             items = data;
             second = dataNot;
@@ -239,8 +237,9 @@ class _RegisteredImagesState extends State<RegisteredImages> with WidgetsBinding
       final img.Image? faceImg = img.decodeImage(bytes);
       Recognition recognition =
       _recognizer.recognize(faceImg!, face.boundingBox);
+      print("Recognition Distance  ${recognition.distance}");
+      if (recognition.distance > 0.9) {
 
-      if (recognition.distance > 1) {
         recognition.name = "Unknown";
         return false;
       }
